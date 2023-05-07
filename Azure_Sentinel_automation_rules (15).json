@@ -1,0 +1,138 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/127b995d-f0aa-46ad-839f-9279cad63259')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/127b995d-f0aa-46ad-839f-9279cad63259')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/AutomationRules",
+            "apiVersion": "2022-12-01-preview",
+            "properties": {
+                "displayName": "test-auto-nurit",
+                "order": 4,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "expirationTimeUtc": null,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": [
+                        {
+                            "conditionType": "Property",
+                            "conditionProperties": {
+                                "propertyName": "IncidentRelatedAnalyticRuleIds",
+                                "operator": "Contains",
+                                "propertyValues": [
+                                    "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/065767e9-51a1-4f6c-a457-765c2827ca00')]"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "/subscriptions/3c1bb38c-82e3-4f8d-a115-a7110ba70d05/resourceGroups/Contoso55-EUS/providers/Microsoft.Logic/workflows/test-nurit-bug13865344",
+                            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/bc0dc6df-4840-4c87-b757-78f93e17f1f9')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/bc0dc6df-4840-4c87-b757-78f93e17f1f9')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/AutomationRules",
+            "apiVersion": "2022-12-01-preview",
+            "properties": {
+                "displayName": "HealthTest",
+                "order": 3,
+                "triggeringLogic": {
+                    "isEnabled": false,
+                    "expirationTimeUtc": null,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Created",
+                    "conditions": []
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": "Informational",
+                            "status": null,
+                            "classification": null,
+                            "classificationReason": null,
+                            "classificationComment": null,
+                            "owner": null,
+                            "labels": null
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "ModifyProperties",
+                        "actionConfiguration": {
+                            "severity": null,
+                            "status": "Closed",
+                            "classification": "BenignPositive",
+                            "classificationReason": "SuspiciousButExpected",
+                            "classificationComment": "test",
+                            "owner": null,
+                            "labels": null
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/AutomationRules/46a78bc1-d022-42bd-82ad-0ab0c21b0db8')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/46a78bc1-d022-42bd-82ad-0ab0c21b0db8')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/AutomationRules",
+            "apiVersion": "2022-12-01-preview",
+            "properties": {
+                "displayName": "HealthPlaybookTest",
+                "order": 5,
+                "triggeringLogic": {
+                    "isEnabled": true,
+                    "expirationTimeUtc": null,
+                    "triggersOn": "Incidents",
+                    "triggersWhen": "Updated",
+                    "conditions": [
+                        {
+                            "conditionType": "PropertyChanged",
+                            "conditionProperties": {
+                                "propertyName": "IncidentSeverity",
+                                "operator": null,
+                                "changeType": null
+                            }
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "order": 1,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "/subscriptions/fdee8146-8bcf-460f-86f3-3f788c285efd/resourceGroups/p_roherzbe/providers/Microsoft.Logic/workflows/RotemHealthManualTrigger",
+                            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+                        }
+                    },
+                    {
+                        "order": 2,
+                        "actionType": "RunPlaybook",
+                        "actionConfiguration": {
+                            "logicAppResourceId": "/subscriptions/fdee8146-8bcf-460f-86f3-3f788c285efd/resourceGroups/p_roherzbe/providers/Microsoft.Logic/workflows/RotemHealth2",
+                            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
